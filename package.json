@@ -6,9 +6,19 @@
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
-    "elysia": "latest"
+    "@elysiajs/cors": "^1.1.1",
+    "@elysiajs/jwt": "^1.1.1",
+    "@elysiajs/swagger": "^1.1.5",
+    "dotenv": "^16.4.5",
+    "elysia": "latest",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.11.4",
+    "sqlite": "^5.1.1",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.9.0",
     "bun-types": "latest"
   },
   "module": "src/index.js"
