@@ -3,8 +3,9 @@ import { Elysia } from "elysia";
 import swagger from "@elysiajs/swagger";
 import dotenv from "dotenv";
 import { auth } from "../routers/auth/plugin";
+import { location } from "../routers/location/plugin";
 
-const app = new Elysia().use(auth);
+const app = new Elysia().use(auth).use(location);
 dotenv.config();
 // cors
 app.use(cors());

@@ -1,6 +1,7 @@
 import Elysia from "elysia";
 import db from "../../db/dbConnect";
 
+
 export const register = new Elysia().post(
   "/register",
   async ({
@@ -19,10 +20,11 @@ export const register = new Elysia().post(
     return error(400, "กรุณากรอกข้อมูลให้ครบ");
   }
 
-  const [existingEmail] = await db.query("SELECT * FROM user WHERE email = ?", [
+  const [existingEmail]: any = await db.query("SELECT * FROM user WHERE email = ?", [
     email,
   ]);
-  const [existingUsername] = await db.query(
+
+  const [existingUsername]: any = await db.query(
     "SELECT * FROM user WHERE username = ?",
     [username]
   );
