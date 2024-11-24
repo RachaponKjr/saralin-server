@@ -11,11 +11,15 @@ export const getLocation = new Elysia().post(
           message: "กรุณากรอก user_id !",
         });
       }
-      const res = await db.query("SELECT * FROM location WHERE user_id = ?", [
+      const [res] = await db.query("SELECT * FROM location WHERE user_id = ?", [
         user_id,
       ]);
-      console.log(res);
       set.status = 200;
+      return {
+        status: 200,
+        message: "ดึงข้อมูลสําเร็จ",
+        data: res,
+      }
     } catch (err) {
       return error(400, "เกิดข้อผิดพลาดในการดึงข้อมูล");
     }
