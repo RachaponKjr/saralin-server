@@ -1,5 +1,4 @@
 import Elysia from "elysia";
-import { boolean } from "zod";
 
 export const AuthService = new Elysia({ name: "auth-service" })
   .derive({ as: "scoped" }, ({ cookie: { session } }) => ({

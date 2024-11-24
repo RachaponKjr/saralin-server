@@ -20,12 +20,12 @@ export const register = new Elysia().post(
     return error(400, "กรุณากรอกข้อมูลให้ครบ");
   }
 
-  const [existingEmail]: any = await db.query("SELECT * FROM user WHERE email = ?", [
+  const [existingEmail]: any = await db.query("SELECT * FROM users WHERE email = ?", [
     email,
   ]);
 
   const [existingUsername]: any = await db.query(
-    "SELECT * FROM user WHERE username = ?",
+    "SELECT * FROM users WHERE username = ?",
     [username]
   );
 
@@ -42,7 +42,7 @@ export const register = new Elysia().post(
 
     // เพิ่มข้อมูลผู้ใช้ใหม่ลงในฐานข้อมูล
     await db.query(
-      "INSERT INTO user (username, password, email) VALUES (?, ?, ?)",
+      "INSERT INTO users (username, password, email) VALUES (?, ?, ?)",
       [username, hashpassword, email]
     );
 
