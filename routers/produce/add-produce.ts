@@ -7,7 +7,7 @@ export const addProduct = new Elysia()
   .model("product.body", TypeProductModel)
   .post(
     "/add-product",
-    async ({ body, db, set, response, error }) => {
+    async ({ body, db, set, error }) => {
       try {
         const { name, description, base_price, status, is_featured } = body;
         await db.product
@@ -16,7 +16,7 @@ export const addProduct = new Elysia()
               name,
               description,
               base_price,
-              status,
+              status: status || ("AVAILABLE" as any),
               is_featured,
             },
           })
