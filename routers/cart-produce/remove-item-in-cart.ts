@@ -1,16 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import Elysia, { t } from "elysia";
 
-export const delProduct = new Elysia()
+export const deleteItemInCart = new Elysia()
   .decorate("db", new PrismaClient())
   .delete(
-    "/delete-produce",
-    async ({ body, db, set, error }) => {
+    "/delete-item-in-cart",
+    async ({ body, set, db, error }) => {
       try {
-        const { product_id } = body;
-        const res = await db.product.delete({
+        const { cart_item_id } = body;
+        const res = await db.cart_items.delete({
           where: {
-            product_id: product_id,
+            cart_item_id: cart_item_id,
           },
         });
         set.status = 200;
@@ -25,7 +25,7 @@ export const delProduct = new Elysia()
     },
     {
       body: t.Object({
-        product_id: t.Number(),
+        cart_item_id: t.Number(),
       }),
     }
   );

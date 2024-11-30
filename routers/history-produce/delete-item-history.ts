@@ -1,23 +1,22 @@
 import { PrismaClient } from "@prisma/client";
 import Elysia, { t } from "elysia";
 
-export const delProduct = new Elysia()
+export const deleteItemInHistory = new Elysia()
   .decorate("db", new PrismaClient())
   .delete(
-    "/delete-produce",
-    async ({ body, db, set, error }) => {
+    "/delete-item-in-history",
+    async ({ body, set, db, error }) => {
       try {
-        const { product_id } = body;
-        const res = await db.product.delete({
+        const { history_product_id } = body;
+        await db.history_product.delete({
           where: {
-            product_id: product_id,
+            id: history_product_id,
           },
         });
         set.status = 200;
         return {
           status: 200,
           message: "ลบข้อมูลสําเร็จ",
-          data: res,
         };
       } catch (err) {
         return error(400, "เกิดข้อผิดพลาดในการดึงข้อมูล");
@@ -25,7 +24,7 @@ export const delProduct = new Elysia()
     },
     {
       body: t.Object({
-        product_id: t.Number(),
+        history_product_id: t.Number(),
       }),
     }
   );

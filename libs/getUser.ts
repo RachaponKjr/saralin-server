@@ -1,7 +1,12 @@
-import db from "../db/dbConnect";
+import { PrismaClient } from "@prisma/client";
 
+const db = new PrismaClient();
 export const GetUser = async (email: string) => {
-    const [rows] = await db.query("SELECT * FROM user WHERE email = ?", [email]);
+    const rows = await db.users.findMany({
+        where: {
+            email: email
+        }
+    })
     if(rows){
         return {
             status:200,

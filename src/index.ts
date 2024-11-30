@@ -4,9 +4,18 @@ import swagger from "@elysiajs/swagger";
 import dotenv from "dotenv";
 import { auth } from "../routers/auth/plugin";
 import { location } from "../routers/location/plugin";
+import { product } from "../routers/produce/plugin";
+import { cart } from "../routers/cart-produce/plugin";
+import { history } from "../routers/history-produce/plugin";
 
-const app = new Elysia().use(auth).use(location);
 dotenv.config();
+const app = new Elysia()
+  .use(auth)
+  .use(location) 
+  .use(product)
+  .use(cart)
+  .use(history);
+
 // cors
 app.use(cors());
 // swagger plugin
