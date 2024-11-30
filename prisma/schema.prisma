@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model cart_items {
+  cart_item_id Int       @id @default(autoincrement())
+  cart_id      Int
+  product_id   Int
+  created_at   DateTime? @default(now()) @db.Timestamp(0)
+  updated_at   DateTime? @default(now()) @db.Timestamp(0)
+  carts        carts     @relation(fields: [cart_id], references: [cart_id], onDelete: Cascade, onUpdate: NoAction, map: "cart_items_ibfk_1")
+  product      product   @relation(fields: [product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "cart_items_ibfk_2")
+
+  @@index([cart_id], map: "cart_id")
+  @@index([product_id], map: "product_id")
+}
+
+model carts {
+  cart_id    Int          @id @default(autoincrement())
+  user_id    String       @db.Char(36)
+  created_at DateTime?    @default(now()) @db.Timestamp(0)
+  updated_at DateTime?    @default(now()) @db.Timestamp(0)
+  cart_items cart_items[]
+  users      users        @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "carts_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+}
+
+model fabrictype {
+  id           Int            @id @default(autoincrement())
+  title        String         @db.VarChar(255)
+  description  String?        @db.Text
+  tags         Json?
+  created_at   DateTime?      @default(now()) @db.Timestamp(0)
+  product_info product_info[]
+}
+
+model locations {
+  location_id   Int       @id @default(autoincrement())
+  user_id       String    @db.Char(36)
+  address_line1 String    @db.VarChar(255)
+  address_line2 String?   @db.VarChar(255)
+  district      String    @db.VarChar(255)
+  city          String    @db.VarChar(255)
+  postal_code   String?   @db.VarChar(10)
+  latitude      Decimal?  @db.Decimal(9, 6)
+  longitude     Decimal?  @db.Decimal(9, 6)
+  created_at    DateTime? @default(now()) @db.Timestamp(0)
+  updated_at    DateTime? @default(now()) @db.Timestamp(0)
+  users         users     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "locations_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+}
+
+model product {
+  product_id   Int            @id @default(autoincrement())
+  name         String         @db.VarChar(255)
+  description  String?        @db.Text
+  base_price   Decimal        @db.Decimal(10, 2)
+  created_at   DateTime?      @default(now()) @db.Timestamp(0)
+  updated_at   DateTime?      @default(now()) @db.Timestamp(0)
+  status       ProductStatus
+  is_featured  Boolean?       @default(false)
+  cart_items   cart_items[]
+  product_info product_info[]
+}
+
+model product_images {
+  image_id     Int          @id @default(autoincrement())
+  variant_id   Int
+  image_url    String       @db.VarChar(255)
+  alt_text     String?      @db.VarChar(255)
+  product_info product_info @relation(fields: [variant_id], references: [variant_id], onDelete: Cascade, map: "product_images_ibfk_1")
+
+  @@index([variant_id], map: "variant_id")
+}
+
+model product_info {
+  variant_id        Int              @id @default(autoincrement())
+  product_id        Int
+  fabric_id         Int
+  color             String?          @db.VarChar(50)
+  brand             String?          @db.VarChar(50)
+  price             Decimal          @db.Decimal(10, 2)
+  discounted_price  Decimal?         @db.Decimal(10, 2)
+  weight_item       Decimal?         @db.Decimal(5, 2)
+  chest             String?          @db.VarChar(50)
+  shoulder_width    String?          @db.VarChar(50)
+  neck_width        String?          @db.VarChar(50)
+  sleeve_length     String?          @db.VarChar(50)
+  forearm_length    String?          @db.VarChar(50)
+  arm_circumference String?          @db.VarChar(50)
+  created_at        DateTime?        @default(now()) @db.Timestamp(0)
+  updated_at        DateTime?        @default(now()) @db.Timestamp(0)
+  product_images    product_images[]
+  product           product          @relation(fields: [product_id], references: [product_id], onDelete: Cascade, map: "product_info_ibfk_1")
+  fabrictype        fabrictype       @relation(fields: [fabric_id], references: [id], onDelete: Cascade, map: "product_info_ibfk_2")
+
+  @@index([fabric_id], map: "fabric_id")
+  @@index([product_id], map: "product_id")
+}
+
+model users {
+  user_id    String      @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  username   String      @db.VarChar(255)
+  email      String      @unique(map: "email") @db.VarChar(255)
+  password   String      @db.VarChar(255)
+  is_active  Boolean     @default(false)
+  created_at DateTime?   @default(now()) @db.Timestamp(0)
+  updated_at DateTime?   @default(now()) @db.Timestamp(0)
+  carts      carts[]
+  histories  history[]
+  locations  locations[]
+}
+
+model history {
+  id              Int               @id @default(autoincrement())
+  user_id         String
+  history_product history_product[]
+  created_at      DateTime          @default(now())
+
+  user users @relation(fields: [user_id], references: [user_id])
+
+  @@index([user_id], map: "user_id")
+}
+
+model history_product {
+  id         Int @id @default(autoincrement())
+  history_id Int
+  product_id Int
+
+  history history @relation(fields: [history_id], references: [id])
+}
+
+enum ProductStatus {
+  AVAILABLE // "วางขาย"
+  NOT_AVAILABLE // "ไม่วางขาย"
+  SOLD // "ขายแล้ว"
+}
