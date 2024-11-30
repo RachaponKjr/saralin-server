@@ -11,7 +11,7 @@ import { history } from "../routers/history-produce/plugin";
 dotenv.config();
 const app = new Elysia()
   .use(auth)
-  .use(location)
+  .use(location) 
   .use(product)
   .use(cart)
   .use(history);
