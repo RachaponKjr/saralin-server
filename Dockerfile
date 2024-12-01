@@ -20,4 +20,4 @@ RUN bun install
 EXPOSE 3000
 
 # รันแอปพลิเคชัน
-CMD ["bun", "start"]
+CMD ["bun", "run", "src/index.ts"]
