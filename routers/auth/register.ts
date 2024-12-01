@@ -7,27 +7,27 @@ export const register = new Elysia().decorate("db", new PrismaClient()).post(
   async ({ body, set, error, db }) => {
     const { username, password, email } = body;
 
-    // ตรวจสอบข้อมูลที่จำเป็น
-    if (!username || !password || !email) {
-      return error(400, "กรุณากรอกข้อมูลให้ครบ");
-    }
-
-    const existingEmail = await db.users.findFirst({
-      where: {
-        email: email,
-      },
-    });
-
-    const existingUsername = await db.users.findFirst({
-      where: {
-        username: username,
-      },
-    });
-
-    if (existingUsername || existingEmail) {
-      return error(400, "มีชื่อผู้ใช้หรืออีเมลนี้แล้ว");
-    }
     try {
+      // ตรวจสอบข้อมูลที่จำเป็น
+      if (!username || !password || !email) {
+        return error(400, "กรุณากรอกข้อมูลให้ครบ");
+      }
+
+      const existingEmail = await db.users.findFirst({
+        where: {
+          email: email,
+        },
+      });
+
+      const existingUsername = await db.users.findFirst({
+        where: {
+          username: username,
+        },
+      });
+
+      if (existingUsername || existingEmail) {
+        return error(400, "มีชื่อผู้ใช้หรืออีเมลนี้แล้ว");
+      }
       // แฮชรหัสผ่าน
       const hashpassword = await Bun.password.hash(password, {
         algorithm: "bcrypt",
@@ -45,9 +45,7 @@ export const register = new Elysia().decorate("db", new PrismaClient()).post(
           },
           histories: {
             create: [
-              {
-                history_product: [],
-              },
+              {},
             ],
           },
         },
