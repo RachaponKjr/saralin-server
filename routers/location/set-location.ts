@@ -1,31 +1,53 @@
 import Elysia from "elysia";
 import { BodyReqLocation } from "./setup";
-import { GetLocation } from "./utils/getLocation";
-import { SetLocation } from "./utils/setLocation";
+import { PrismaClient } from "@prisma/client";
 
-export const setLocation = new Elysia().use(BodyReqLocation).post(
-  "/set-location",
-  async ({body,set}) => {
-    const { user_id } = body;
-    const locationFound = await GetLocation({ user_id });
+export const setLocation = new Elysia()
+  .decorate("db", new PrismaClient())
+  .use(BodyReqLocation)
+  .post(
+    "/set-location",
+    async ({ body, set, db }) => {
+      const { user_id, location } = body;
+      const locationFound = await db.users.findUnique({
+        where: {
+          user_id: user_id,
+        },
+        include: {
+          locations: true,
+        },
+      });
 
-    if (locationFound.length > 8) {
+      console.log(locationFound);
+
+      if (locationFound?.locations.length === 4) {
         set.status = 400;
         return {
-            status: 400,
-            message: "คุณไม่สามารถเพิ่มที่อยู่ได้มากกว่า 1",
-        }
+          status: 400,
+          message: "คุณไม่สามารถเพิ่มที่อยู่ได้มากกว่า 4",
+        };
+      }
+
+      const createlocation = await db.locations.create({
+        data: {
+          user_id: user_id,
+          address_line1: location.address_line1 as string,
+          address_line2: location.address_line2,
+          district: location.district,
+          city: location.city,
+          postal_code: location.postal_code,
+          latitude: location.latitude,
+          longitude: location.longitude,
+        },
+      });
+      set.status = 200;
+      return {
+        status: 200,
+        message: "เพิ่มที่อยู่สําเร็จ",
+        data: createlocation,
+      };
+    },
+    {
+      body: "location.body",
     }
-    const setLocation = await SetLocation({ body });
-    if (setLocation.status === 200) {
-        set.status = 200;
-        return {
-            status: 200,
-            message: "เพิ่มที่อยู่สําเร็จ",
-        }
-    }
-  },
-  {
-    body: "location.body",
-  }
-);
+  );
