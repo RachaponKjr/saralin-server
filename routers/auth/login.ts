@@ -17,15 +17,15 @@ export const login = new Elysia()
       try {
         const res = await GetUser(body.email);
         const user = res.data as any;
-
-        if (!user || user.length === 0) {
+        
+        if (!user) {
           set.status = 404;
           return { status: 404, message: "User not found" };
         }
 
         const verifyPassword = await Bun.password.verify(
           body.password,
-          user[0].password
+          user.password
         );
         if (!verifyPassword) {
           set.status = 400;
@@ -36,7 +36,7 @@ export const login = new Elysia()
         await userStatus.login();
 
         const token = await acceptToken.sign({
-          id: user[0].user_id,
+          id: user.user_id,
         });
 
         access_token.set({
@@ -44,12 +44,12 @@ export const login = new Elysia()
           httpOnly: true,
           path: "/",
         });
-     
+
         set.status = 200;
         return {
           status: 200,
           message: "Login Success",
-          data: { accessToken: token },
+          data: { accessToken: token, user: res.data },
         };
       } catch (error) {
         console.log(error);

@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const db = new PrismaClient();
 export const GetUser = async (email: string) => {
-    const rows = await db.users.findMany({
+    const rows = await db.users.findFirst({
         where: {
             email: email
         }
