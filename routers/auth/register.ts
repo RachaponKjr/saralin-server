@@ -10,7 +10,10 @@ export const register = new Elysia().decorate("db", new PrismaClient()).post(
     try {
       // ตรวจสอบข้อมูลที่จำเป็น
       if (!username || !password || !email) {
-        return error(400, "กรุณากรอกข้อมูลให้ครบ");
+        return {
+          status: 400,
+          message: "กรุณากรอกข้อมูลให้ครบ",
+        };
       }
 
       const existingEmail = await db.users.findFirst({
@@ -26,7 +29,10 @@ export const register = new Elysia().decorate("db", new PrismaClient()).post(
       });
 
       if (existingUsername || existingEmail) {
-        return error(400, "มีชื่อผู้ใช้หรืออีเมลนี้แล้ว");
+        return {
+          status: 400,
+          message: "อีเมลหรือชื่อผู้ใช้ถูกใช้ไปแล้ว",
+        };
       }
       // แฮชรหัสผ่าน
       const hashpassword = await Bun.password.hash(password, {
@@ -44,9 +50,7 @@ export const register = new Elysia().decorate("db", new PrismaClient()).post(
             create: [{}],
           },
           histories: {
-            create: [
-              {},
-            ],
+            create: [{}],
           },
         },
         include: {
@@ -63,8 +67,10 @@ export const register = new Elysia().decorate("db", new PrismaClient()).post(
       };
     } catch (err: any) {
       // จัดการข้อผิดพลาดที่เกิดขึ้น
-      console.error("Registration Error:", err);
-      return error(500, "เกิดข้อผิดพลาดในการลงทะเบียน");
+      return {
+        status: 400,
+        message: "เกิดข้อผิดพลาดกรุณาลองใหม่อีกครั้ง",
+      };
     }
   },
   {

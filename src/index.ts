@@ -21,7 +21,7 @@ app.use(cors());
 // swagger plugin
 app.use(swagger());
 
-app.listen(3000);
+app.listen(3030);
 
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`

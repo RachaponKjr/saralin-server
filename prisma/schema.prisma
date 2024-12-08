@@ -47,6 +47,7 @@ model locations {
   address_line1 String    @db.VarChar(255)
   address_line2 String?   @db.VarChar(255)
   district      String    @db.VarChar(255)
+  is_default    Boolean   @default(false)
   city          String    @db.VarChar(255)
   postal_code   String?   @db.VarChar(10)
   latitude      Decimal?  @db.Decimal(9, 6)

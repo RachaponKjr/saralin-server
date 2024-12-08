@@ -17,10 +17,10 @@ export const login = new Elysia()
       try {
         const res = await GetUser(body.email);
         const user = res.data as any;
-        
+
         if (!user) {
           set.status = 404;
-          return { status: 404, message: "User not found" };
+          return { status: 404, message: "อีเมลไม่ถูกต้อง" };
         }
 
         const verifyPassword = await Bun.password.verify(
@@ -29,7 +29,7 @@ export const login = new Elysia()
         );
         if (!verifyPassword) {
           set.status = 400;
-          return { status: 400, message: "Invalid credentials" };
+          return { status: 400, message: "รหัสผ่านไม่ถูกต้อง" };
         }
 
         const userStatus = new StatusUser(body.email);
@@ -48,13 +48,12 @@ export const login = new Elysia()
         set.status = 200;
         return {
           status: 200,
-          message: "Login Success",
+          message: "เข้าสู่ระบบสําเร็จ",
           data: { accessToken: token, user: res.data },
         };
       } catch (error) {
-        console.log(error);
         set.status = 500;
-        return { status: 500, message: "Internal Server Error" };
+        return { status: 500, message: "เกิดข้อผิดพลาดกรุณาลองใหม่อีกครั้ง" };
       }
     },
     {
