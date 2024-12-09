@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
   engineType = "binary"
 }
 
@@ -62,14 +62,18 @@ model locations {
 model product {
   product_id   Int            @id @default(autoincrement())
   name         String         @db.VarChar(255)
+  category_id  Int
   description  String?        @db.Text
   base_price   Decimal        @db.Decimal(10, 2)
   created_at   DateTime?      @default(now()) @db.Timestamp(0)
   updated_at   DateTime?      @default(now()) @db.Timestamp(0)
   status       ProductStatus  @default(AVAILABLE)
   is_featured  Boolean?       @default(false)
+  recommend    Boolean?       @default(false)
   cart_items   cart_items[]
   product_info product_info[]
+
+  category category @relation(fields: [category_id], references: [category_id])
 }
 
 model product_images {
@@ -107,6 +111,15 @@ model product_info {
   @@index([product_id], map: "product_id")
 }
 
+model category {
+  category_id Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  description String?   @db.Text
+  created_at  DateTime? @default(now()) @db.Timestamp(0)
+  updated_at  DateTime? @default(now()) @db.Timestamp(0)
+  products    product[]
+}
+
 model users {
   user_id    String      @id @default(dbgenerated("(uuid())")) @db.Char(36)
   username   String      @db.VarChar(255)
@@ -118,6 +131,19 @@ model users {
   carts      carts[]
   histories  history[]
   locations  locations[]
+  user_info  user_info?
+}
+
+model user_info {
+  user_id       String    @id
+  first_name    String?
+  last_name     String?
+  phone_number  String?
+  avatar_image  String?
+  date_of_birth DateTime?
+  gender        String?
+  role          String    @default("user")
+  users         users     @relation(fields: [user_id], references: [user_id]) // ความสัมพันธ์กับ `users`
 }
 
 model history {

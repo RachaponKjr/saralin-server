@@ -18,8 +18,6 @@ export const setLocation = new Elysia()
         },
       });
 
-      console.log(locationFound);
-
       if (locationFound?.locations.length === 4) {
         set.status = 400;
         return {

@@ -52,10 +52,22 @@ export const register = new Elysia().decorate("db", new PrismaClient()).post(
           histories: {
             create: [{}],
           },
+          user_info: {
+            create: {
+              first_name: null,
+              last_name: null,
+              phone_number: null,
+              avatar_image: null,
+              date_of_birth: null,
+              gender: null,
+              role: "user",
+            },
+          },
         },
         include: {
           carts: true,
           histories: true,
+          user_info: true,
         },
       });
       // ส่งผลลัพธ์สำเร็จ

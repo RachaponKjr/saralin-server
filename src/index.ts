@@ -7,14 +7,16 @@ import { location } from "../routers/location/plugin";
 import { product } from "../routers/produce/plugin";
 import { cart } from "../routers/cart-produce/plugin";
 import { history } from "../routers/history-produce/plugin";
+import { monitor } from "../routers/monitor/plugin";
 
 dotenv.config();
 const app = new Elysia()
   .use(auth)
-  .use(location) 
+  .use(location)
   .use(product)
   .use(cart)
-  .use(history);
+  .use(history)
+  .use(monitor);
 
 // cors
 app.use(cors());

@@ -11,6 +11,17 @@ export const GetUser = async (email: string) => {
       username: true,
       email: true,
       password: true,
+      user_info: {
+        select: {
+          avatar_image: true,
+          date_of_birth: true,
+          first_name: true,
+          gender: true,
+          last_name: true,
+          phone_number: true,
+          role: true,
+        },
+      },
       locations: {
         where: {
           is_default: true,

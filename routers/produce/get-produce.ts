@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import Elysia from "elysia";
 
-export const getProduct = new Elysia()
+export const getProducts = new Elysia()
   .decorate("db", new PrismaClient())
-  .get("/get-produce", async ({ set, error, db }) => {
+  .get("/get-produces", async ({ set, error, db }) => {
     try {
       const res = await db.product.findMany({
         include: {
