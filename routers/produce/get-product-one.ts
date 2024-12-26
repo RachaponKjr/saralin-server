@@ -5,7 +5,7 @@ export const getProductById = new Elysia()
   .decorate("db", new PrismaClient())
   .get("/get-product/:product_id", async ({ params, set, error, db }) => {
     try {
-      const { product_id } = params;
+      const { product_id } = params; 
 
       const product = await db.product.findUnique({
         where: { product_id: parseInt(product_id) },
