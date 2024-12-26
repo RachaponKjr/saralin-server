@@ -8,8 +8,12 @@ import { product } from "../routers/produce/plugin";
 import { cart } from "../routers/cart-produce/plugin";
 import { history } from "../routers/history-produce/plugin";
 import { monitor } from "../routers/monitor/plugin";
+import { adaptMiddleware } from "../utils/adaptMiddleware";
+import { helmet } from "elysia-helmet";
+
 
 dotenv.config();
+
 const app = new Elysia()
   .use(auth)
   .use(location)
@@ -17,6 +21,9 @@ const app = new Elysia()
   .use(cart)
   .use(history)
   .use(monitor);
+
+// helmet
+app.use(helmet());
 
 // cors
 app.use(cors());
