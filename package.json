@@ -11,6 +11,7 @@
     "@elysiajs/swagger": "^1.1.5",
     "dotenv": "^16.4.5",
     "elysia": "latest",
+    "elysia-helmet": "^2.0.0",
     "morgan": "^1.10.0",
     "mysql2": "^3.11.4",
     "sqlite": "^5.1.1",

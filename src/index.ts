@@ -4,9 +4,15 @@ import swagger from "@elysiajs/swagger";
 import dotenv from "dotenv";
 import { auth } from "../routers/auth/plugin";
 import { location } from "../routers/location/plugin";
+import { adaptMiddleware } from "../utils/adaptMiddleware";
+import { helmet } from "elysia-helmet";
 
 const app = new Elysia().use(auth).use(location);
 dotenv.config();
+
+// helmet
+app.use(helmet());
+
 // cors
 app.use(cors());
 // swagger plugin
