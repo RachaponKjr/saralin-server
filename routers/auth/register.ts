@@ -1,51 +1,70 @@
-import { history } from "./../../node_modules/.prisma/client/index.d";
 import { PrismaClient } from "@prisma/client";
-import Elysia, { t } from "elysia";
+import { Elysia, t } from "elysia";
+import Bun from "bun";
 
-export const register = new Elysia().decorate("db", new PrismaClient()).post(
+// ตั้งค่า Prisma Client
+const db = new PrismaClient();
+
+const generateUniqueUsername = (): string => {
+  const timestamp = Date.now().toString().slice(-6);
+  const randomPart = Math.floor(Math.random() * 100); 
+  return `@SRL-${timestamp}${randomPart}`;
+};
+
+export const register = new Elysia().decorate("db", db).post(
   "/register",
   async ({ body, set, error, db }) => {
-    const { username, password, email } = body;
+    const {
+      password,
+      email,
+      first_name,
+      last_name,
+      phone_number,
+      gender,
+      date_of_birth,
+    } = body;
 
     try {
       // ตรวจสอบข้อมูลที่จำเป็น
-      if (!username || !password || !email) {
+      if (!password || !email || !first_name || !last_name || !phone_number || !gender || !date_of_birth ) {
         return {
           status: 400,
           message: "กรุณากรอกข้อมูลให้ครบ",
         };
       }
 
+      // สร้าง username ที่ไม่ซ้ำกัน
+      const username = generateUniqueUsername();
+
+      // ตรวจสอบว่าอีเมลมีการใช้แล้วในฐานข้อมูล
       const existingEmail = await db.users.findFirst({
         where: {
-          email: email,
+          email: email.toLowerCase(),
         },
       });
 
-      const existingUsername = await db.users.findFirst({
-        where: {
-          username: username,
-        },
-      });
-
-      if (existingUsername || existingEmail) {
+      if (existingEmail) {
         return {
           status: 400,
-          message: "อีเมลหรือชื่อผู้ใช้ถูกใช้ไปแล้ว",
+          message: "อีเมลนี้ถูกใช้ไปแล้ว",
         };
       }
+
       // แฮชรหัสผ่าน
       const hashpassword = await Bun.password.hash(password, {
         algorithm: "bcrypt",
         cost: 4,
       });
 
+      // เปลี่ยนอีเมลให้เป็นตัวพิมพ์เล็ก
+      const lowercaseEmail = email.toLowerCase();
+
       // เพิ่มข้อมูลผู้ใช้ใหม่ลงในฐานข้อมูล
       const res = await db.users.create({
         data: {
-          username: username,
+          username: username, // ใช้ username ที่สร้างขึ้น
           password: hashpassword,
-          email: email,
+          email: lowercaseEmail,
           carts: {
             create: [{}],
           },
@@ -54,12 +73,12 @@ export const register = new Elysia().decorate("db", new PrismaClient()).post(
           },
           user_info: {
             create: {
-              first_name: null,
-              last_name: null,
-              phone_number: null,
+              first_name: first_name,
+              last_name: last_name,
+              phone_number: phone_number || null,
               avatar_image: null,
-              date_of_birth: null,
-              gender: null,
+              date_of_birth: date_of_birth,
+              gender: gender,
               role: "user",
             },
           },
@@ -70,6 +89,7 @@ export const register = new Elysia().decorate("db", new PrismaClient()).post(
           user_info: true,
         },
       });
+
       // ส่งผลลัพธ์สำเร็จ
       set.status = 201;
       return {
@@ -81,15 +101,20 @@ export const register = new Elysia().decorate("db", new PrismaClient()).post(
       // จัดการข้อผิดพลาดที่เกิดขึ้น
       return {
         status: 400,
+        err: err,
         message: "เกิดข้อผิดพลาดกรุณาลองใหม่อีกครั้ง",
       };
     }
   },
   {
     body: t.Object({
-      username: t.String(),
       password: t.String(),
       email: t.String(),
+      first_name: t.String(),
+      last_name: t.String(),
+      phone_number: t.String(),
+      gender: t.String(),
+      date_of_birth: t.String(),
     }),
   }
 );

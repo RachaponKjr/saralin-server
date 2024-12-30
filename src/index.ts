@@ -23,7 +23,9 @@ const app = new Elysia()
   .use(monitor);
 
 // helmet
-app.use(helmet());
+// app.use(helmet());
+
+// cookie perser
 
 // cors
 app.use(cors());
@@ -33,5 +35,5 @@ app.use(swagger());
 app.listen(3030);
 
 console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port} Layer:${process.env.NODE_ENV === "production" ? "Production" : "Development"}`
 );
