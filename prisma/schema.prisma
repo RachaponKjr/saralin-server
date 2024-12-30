@@ -47,13 +47,13 @@ model locations {
   address_line1 String    @db.VarChar(255)
   address_line2 String?   @db.VarChar(255)
   district      String    @db.VarChar(255)
-  is_default    Boolean   @default(false)
   city          String    @db.VarChar(255)
   postal_code   String?   @db.VarChar(10)
   latitude      Decimal?  @db.Decimal(9, 6)
   longitude     Decimal?  @db.Decimal(9, 6)
   created_at    DateTime? @default(now()) @db.Timestamp(0)
   updated_at    DateTime? @default(now()) @db.Timestamp(0)
+  is_default    Boolean   @default(false)
   users         users     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "locations_ibfk_1")
 
   @@index([user_id], map: "user_id")
@@ -62,18 +62,19 @@ model locations {
 model product {
   product_id   Int            @id @default(autoincrement())
   name         String         @db.VarChar(255)
-  category_id  Int
   description  String?        @db.Text
   base_price   Decimal        @db.Decimal(10, 2)
   created_at   DateTime?      @default(now()) @db.Timestamp(0)
   updated_at   DateTime?      @default(now()) @db.Timestamp(0)
   status       ProductStatus  @default(AVAILABLE)
   is_featured  Boolean?       @default(false)
+  category_id  Int
   recommend    Boolean?       @default(false)
   cart_items   cart_items[]
+  category     category       @relation(fields: [category_id], references: [category_id])
   product_info product_info[]
 
-  category category @relation(fields: [category_id], references: [category_id])
+  @@index([category_id], map: "product_category_id_fkey")
 }
 
 model product_images {
@@ -125,9 +126,9 @@ model users {
   username   String      @db.VarChar(255)
   email      String      @unique(map: "email") @db.VarChar(255)
   password   String      @db.VarChar(255)
-  is_active  Boolean     @default(false)
   created_at DateTime?   @default(now()) @db.Timestamp(0)
   updated_at DateTime?   @default(now()) @db.Timestamp(0)
+  is_active  Boolean     @default(false)
   carts      carts[]
   histories  history[]
   locations  locations[]
@@ -140,33 +141,33 @@ model user_info {
   last_name     String?
   phone_number  String?
   avatar_image  String?
-  date_of_birth DateTime?
+  date_of_birth String?
   gender        String?
   role          String    @default("user")
-  users         users     @relation(fields: [user_id], references: [user_id]) // ความสัมพันธ์กับ `users`
+  users         users     @relation(fields: [user_id], references: [user_id])
 }
 
 model history {
   id              Int               @id @default(autoincrement())
   user_id         String
-  history_product history_product[]
   created_at      DateTime          @default(now())
-
-  user users @relation(fields: [user_id], references: [user_id])
+  user            users             @relation(fields: [user_id], references: [user_id])
+  history_product history_product[]
 
   @@index([user_id], map: "user_id")
 }
 
 model history_product {
-  id         Int @id @default(autoincrement())
+  id         Int     @id @default(autoincrement())
   history_id Int
   product_id Int
+  history    history @relation(fields: [history_id], references: [id])
 
-  history history @relation(fields: [history_id], references: [id])
+  @@index([history_id], map: "history_product_history_id_fkey")
 }
 
 enum ProductStatus {
-  AVAILABLE // "วางขาย"
-  NOT_AVAILABLE // "ไม่วางขาย"
-  SOLD // "ขายแล้ว"
+  AVAILABLE
+  NOT_AVAILABLE
+  SOLD
 }

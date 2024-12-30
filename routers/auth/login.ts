@@ -28,8 +28,8 @@ export const login = new Elysia()
           user.password
         );
         if (!verifyPassword) {
-          set.status = 400;
-          return { status: 400, message: "รหัสผ่านไม่ถูกต้อง" };
+          set.status = 404;
+          return { status: 404, message: "รหัสผ่านไม่ถูกต้อง" };
         }
 
         const userStatus = new StatusUser(body.email);
@@ -42,6 +42,7 @@ export const login = new Elysia()
         access_token.set({
           value: token,
           httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
           path: "/",
         });
 
