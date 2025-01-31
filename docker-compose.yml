@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: saralin-backend
+    ports:
+      - 3000:3000
+    environment:
+      - DATABASE_URL=mysql://root:saralinsql!@#@db:3306/saralin-db
+    depends_on:
+      - db
+    networks:
+      - saralin-network
+
+  db:
+    image: mysql:9.2
+    container_name: saralin-db
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=saralin-db
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=saralinsql!@#
+    networks:
+      - saralin-network
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+networks:
+  saralin-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local

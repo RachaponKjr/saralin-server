@@ -6,7 +6,7 @@ export const getProductByCategory = new Elysia()
   .get("/get-product-by-category", async ({ query, set, error, db }) => {
     try {
       const { category } = query;
-
+      console.log(category);
       if (!category) {
         return error(400, {
           status: 400,
@@ -16,6 +16,7 @@ export const getProductByCategory = new Elysia()
 
       const products = await db.product.findMany({
         where: {
+          status: "AVAILABLE",
           category: {
             name: category,
           },

@@ -9,6 +9,7 @@
   "dependencies": {
     "@elysiajs/cookie": "^0.8.0",
     "@elysiajs/cors": "^1.1.1",
+    "@elysiajs/eden": "^1.2.0",
     "@elysiajs/jwt": "^1.1.1",
     "@elysiajs/swagger": "^1.1.5",
     "@prisma/client": "^5.22.0",
