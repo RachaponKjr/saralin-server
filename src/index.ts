@@ -1,5 +1,5 @@
 import cors from "@elysiajs/cors";
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import swagger from "@elysiajs/swagger";
 import dotenv from "dotenv";
 import { auth } from "../routers/auth/plugin";
@@ -10,6 +10,8 @@ import { history } from "../routers/history-produce/plugin";
 import { monitor } from "../routers/monitor/plugin";
 import { adaptMiddleware } from "../utils/adaptMiddleware";
 import { helmet } from "elysia-helmet";
+import { treaty } from "@elysiajs/eden";
+import { productWS } from "../ws/product-socket";
 
 
 dotenv.config();
@@ -20,7 +22,13 @@ const app = new Elysia()
   .use(product)
   .use(cart)
   .use(history)
-  .use(monitor);
+  .use(monitor)
+  .use(productWS)
+
+// socket
+// productSocket(app);
+
+
 
 // helmet
 // app.use(helmet());
@@ -28,7 +36,9 @@ const app = new Elysia()
 // cookie perser
 
 // cors
-app.use(cors());
+app.use(cors({
+  origin:"*",
+}));
 // swagger plugin
 app.use(swagger());
 

@@ -4,10 +4,12 @@ import { delProduct } from "./del-produce";
 import { getProducts } from "./get-produce";
 import { getProductById } from "./get-product-one";
 import { getProductByCategory } from "./get-produce-category";
+import { editProduct } from "./edit-produce";
 
 export const product = new Elysia({ prefix: "/api/v1", tags: ["Product"] })
   .use(addProduct)
   .use(delProduct)
   .use(getProducts)
   .use(getProductById)
-  .use(getProductByCategory);
+  .use(getProductByCategory)
+  .use(editProduct)
