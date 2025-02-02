@@ -14,7 +14,6 @@ services:
       - db
     networks:
       - saralin-network
-    entrypoint: /bin/sh -c "until mysql -h db -u root -p saralinpasswordsql -e 'select 1'; do echo waiting for db; sleep 2; done; bun run start"
 
   db:
     image: mysql:9.2
