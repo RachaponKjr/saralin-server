@@ -7,17 +7,11 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     && apt-get clean
 
-# ติดตั้ง Prisma CLI
-RUN bun add @prisma/cli
-
 # ตั้งค่าโฟลเดอร์ทำงาน
 WORKDIR /app
 
 # คัดลอกไฟล์โปรเจกต์
 COPY . .
-
-# รันคำสั่ง Prisma migrate เพื่อสร้างฐานข้อมูลจาก Prisma schema
-RUN bun prisma migrate deploy
 
 # ติดตั้ง dependencies ด้วย bun
 RUN bun install
