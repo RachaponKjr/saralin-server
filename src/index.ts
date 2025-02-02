@@ -13,7 +13,6 @@ import { helmet } from "elysia-helmet";
 import { treaty } from "@elysiajs/eden";
 import { productWS } from "../ws/product-socket";
 
-
 dotenv.config();
 
 const app = new Elysia()
@@ -23,12 +22,10 @@ const app = new Elysia()
   .use(cart)
   .use(history)
   .use(monitor)
-  .use(productWS)
+  .use(productWS);
 
 // socket
 // productSocket(app);
-
-
 
 // helmet
 // app.use(helmet());
@@ -36,14 +33,18 @@ const app = new Elysia()
 // cookie perser
 
 // cors
-app.use(cors({
-  origin:"*",
-}));
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 // swagger plugin
 app.use(swagger());
 
-app.listen(3030);
+app.listen(3000);
 
 console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port} Layer:${process.env.NODE_ENV === "production" ? "Production" : "Development"}`
+  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port} Layer:${
+    process.env.NODE_ENV === "production" ? "Production" : "Development"
+  }`
 );
