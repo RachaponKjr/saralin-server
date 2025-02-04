@@ -8,7 +8,16 @@ export const setLocation = new Elysia()
   .post(
     "/set-location",
     async ({ body, set, db }) => {
-      const { user_id, location } = body;
+      const {
+        user_id,
+        address_line1,
+        address_line2,
+        city,
+        district,
+        postal_code,
+        latitude,
+        longitude,
+      } = body;
       const locationFound = await db.users.findUnique({
         where: {
           user_id: user_id,
@@ -29,13 +38,13 @@ export const setLocation = new Elysia()
       const createlocation = await db.locations.create({
         data: {
           user_id: user_id,
-          address_line1: location.address_line1 as string,
-          address_line2: location.address_line2,
-          district: location.district,
-          city: location.city,
-          postal_code: location.postal_code,
-          latitude: location.latitude,
-          longitude: location.longitude,
+          address_line1: address_line1,
+          address_line2: address_line2,
+          district: district,
+          city: city,
+          postal_code: postal_code,
+          latitude: latitude,
+          longitude: longitude,
         },
       });
       set.status = 200;
