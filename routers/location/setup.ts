@@ -6,16 +6,13 @@ const Location = t.Object({
   address_line2: t.Optional(t.String()),
   district: t.String(),
   city: t.String(),
-  postal_code:  t.Optional(t.String()),
+  postal_code:  t.String(),
   latitude: t.Optional(t.Number()),
   longitude: t.Optional(t.Number()),
 });
 
 export const BodyReqLocation = new Elysia().model({
-  "location.body": t.Object({
-    user_id: t.String(),
-    location: Location,
-  }),
+  "location.body":  Location,
 });
 
 export const BodyReqUpdateLocation = new Elysia().model({
