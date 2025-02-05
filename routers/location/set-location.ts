@@ -43,9 +43,12 @@ export const setLocation = new Elysia()
           district: district,
           city: city,
           postal_code: postal_code,
-          latitude: latitude ?? null,
-          longitude: longitude ?? null,
-          address_line2: address_line2 ?? null,
+          // เช็คว่า address_line2 ไม่ใช่ null แล้วค่อยใส่
+          ...(address_line2 != null && { address_line2 }),
+          // เช็คว่า latitude ไม่ใช่ null แล้วค่อยใส่
+          ...(latitude != null && { latitude }),
+          // เช็คว่า longitude ไม่ใช่ null แล้วค่อยใส่
+          ...(longitude != null && { longitude }),
           is_default: is_default ?? false,
         },
       });
