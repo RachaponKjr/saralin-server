@@ -17,6 +17,7 @@ export const setLocation = new Elysia()
         postal_code,
         latitude,
         longitude,
+        is_default,
       } = body;
       const locationFound = await db.users.findUnique({
         where: {
@@ -39,12 +40,13 @@ export const setLocation = new Elysia()
         data: {
           user_id: user_id,
           address_line1: address_line1,
-          address_line2: address_line2,
+          address_line2: address_line2 ?? null,
           district: district,
           city: city,
           postal_code: postal_code,
-          latitude: latitude,
-          longitude: longitude,
+          latitude: latitude ?? null,
+          longitude: longitude ?? null,
+          is_default: is_default ?? false,
         },
       });
       set.status = 200;
