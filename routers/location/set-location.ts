@@ -43,9 +43,9 @@ export const setLocation = new Elysia()
           district: district,
           city: city,
           postal_code: postal_code,
-          ...(address_line2 && { address_line2 }),
-          ...(latitude && { latitude }),
-          ...(longitude && { longitude }),
+          latitude: latitude ?? 0,
+          longitude: longitude ?? 0,
+          address_line2: address_line2 ?? "",
           is_default: is_default ?? false,
         },
       });
