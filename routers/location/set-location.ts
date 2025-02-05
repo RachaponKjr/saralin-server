@@ -40,12 +40,12 @@ export const setLocation = new Elysia()
         data: {
           user_id: user_id,
           address_line1: address_line1,
-          address_line2: address_line2 ?? null,
           district: district,
           city: city,
           postal_code: postal_code,
-          latitude: latitude ?? null,
-          longitude: longitude ?? null,
+          ...(address_line2 && { address_line2 }),
+          ...(latitude && { latitude }),
+          ...(longitude && { longitude }),
           is_default: is_default ?? false,
         },
       });
